@@ -7,7 +7,7 @@ export async function SocketIO(app: http.Server) {
     pingTimeout: 1000,
     path: "/socket",
     cors: {
-      origin: isProduction ? "https://www.lsw.kr" : "http://www.lsw.kr",
+      origin: isProduction ? "https://card-game-jade.vercel.app/" : "*",
     },
   });
 

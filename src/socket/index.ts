@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import { getRoomActionCard } from "../util/blackSmith";
 
 const isProduction = process.env.NODE_ENV == "production";
-const origin = isProduction ? 'http://lsw.kr' : '*'
+const origin = isProduction ? 'https://card-game-jade.vercel.app/' : '*'
 
 
 export class ChatSocket{
