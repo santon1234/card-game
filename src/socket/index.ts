@@ -2,7 +2,8 @@ import { Server } from "socket.io";
 import { getRoomActionCard } from "../util/blackSmith";
 
 const isProduction = process.env.NODE_ENV == "production";
-const origin = isProduction ? 'https://card-game-jade.vercel.app/' : '*'
+const origin =  '*'
+// const origin = isProduction ? 'https://card-game-jade.vercel.app/' : '*'
 
 
 export class ChatSocket{
@@ -12,7 +13,7 @@ export class ChatSocket{
   
   constructor(http:any){
     // const { clientsCount } = (io.engine as any)
-    this.mSocket = new Server(http,{cors:{ origin,credentials:isProduction}})
+    this.mSocket = new Server(http,{cors:{ origin,credentials: false}})
     this.mRobyUsers = {}
     this.mRoomIndex = 0
   }

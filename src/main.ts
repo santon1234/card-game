@@ -4,7 +4,8 @@ import http from "http";
 import { ChatSocket } from "./socket/index";
 
 const isProduction = process.env.NODE_ENV == "production";
-const origin = isProduction ? 'https://card-game-jade.vercel.app/' : '*'
+const origin =  '*'
+// const origin = isProduction ? 'https://card-game-jade.vercel.app/' : '*'
 const port =  80;
 
 const app = express();
