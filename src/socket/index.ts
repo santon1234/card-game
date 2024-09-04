@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { getRoomActionCard } from "../util/blackSmith";
+import { getRoomActionCard } from "../util";
 
 const isProduction = process.env.NODE_ENV == "production";
 const origin =  '*'
