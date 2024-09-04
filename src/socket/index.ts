@@ -33,52 +33,44 @@ export class ChatSocket{
       this.mRobyUsers[socket.id] = true
       socket.data.roomName = '';
 
-      socket.data.rooms = [...(socket as any).adapter.sids]
-
       socket.emit("welcome", {
         socketId: socket.id,
         users: userInfo(),
         clientsCount: (await userInfo()).length
       });
 
-      socket.on("make-room", async ({cardDeck})=> {
-        socket.data.roomName = socket.id;
-        socket.data.master = true
-        socket.data.actionCard = await getRoomActionCard(socket.id)
-        socket.data.cardDeck = cardDeck
-
-        socket.join(socket.id)
-        
-        socket.emit('make-room',{roomName: socket.id})
-      })
-
       socket.on("send-message",async({id,chat,time})=>{
         socket.emit('send-message',{id,chat, time})
         socket.broadcast.emit('send-message',{id,chat, time})
       })
 
-      // socket.on("receive-message",async({id,chat,time})=>{
-      //   socket.emit('receive-message',{id,chat, time})
-      //   socket.broadcast.emit('receive-message',{id,chat, time})
-      // })
+      socket.on("make-room", async ({cardDeck})=> {
+        socket.data.roomName = socket.id.slice(0,6)
+        socket.data.master = true
+        socket.data.actionCard = await getRoomActionCard(socket.id)
+        socket.data.cardDeck = cardDeck
+
+        socket.join(socket.data.roomName)
+        socket.emit('make-room',{roomName: socket.data.roomName})
+      })
+   
 
       socket.on("search-room", async ({roomName,cardDeck} : {roomName:string,cardDeck:any})=> {
         const room = (socket as any).adapter.sids.get(roomName)
         socket.data.cardDeck = cardDeck
-
-        if(!room) {
-          socket.emit('search-room',{result: false,msg: '없는 방입니다.'})
-          return
-        }
-
-        if(room.size===1) {
-          socket.data.roomName = roomName
-          socket.join(roomName)
+        socket.data.roomName = roomName;
 
           const sockets = await this.mSocket.fetchSockets();
           const otherInfo = sockets.find(e=>{
             return e.data.roomName === roomName && e.id !== socket.id
           })
+          if(!otherInfo){
+            socket.emit('search-room',{result: false,msg: '없는 방입니다.'})
+            return
+          }
+
+          socket.join(roomName)
+          socket.data.roomName = roomName
           
           socket.to(roomName).emit('incomming-user',{
             me: otherInfo.id,
@@ -93,9 +85,7 @@ export class ChatSocket{
             clientsCount: 2
           })
           socket.emit('search-room',{result: true, msg:'success, find the room'})
-        }else{
-          socket.emit('search-room',{result: false,msg:'꽉 찬방입니다.'})
-        }
+          // socket.emit('search-room',{result: false,msg:'꽉 찬방입니다.'})
       })
 
 
@@ -137,9 +127,11 @@ export class ChatSocket{
         }
       })
       
-      socket.on("attack-card", async ({idx, attack,enemyIdx}) => {
-        socket.to(socket.data.roomName).emit("attack-card", {idx: idx, attack: attack,enemyIdx:enemyIdx}) 
+      socket.on("attack-card", async ({socketId,idx, attack,enemyIdx}) => {
+        socket.to(socket.data.roomName).emit("attack-card", {socketId,idx: idx, attack: attack,enemyIdx:enemyIdx}) 
+        socket.emit("attack-card", {socketId,idx: idx, attack: attack,enemyIdx:enemyIdx}) 
       });
+
       socket.on("use-heal-card", async ({idx, value}) => {
         socket.to(socket.data.roomName).emit("use-heal-card", {idx: idx, value: value}) 
       });
