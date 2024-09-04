@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    // "target": "es5",
+    // "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "ES2017",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "esModuleInterop": true,
+    "lib": ["es2017", "DOM"],  
+    "strictNullChecks": false,
+    "allowJs": true,
+  },
+  "include": ["src", "*.ts", "src/**/*.ts"],
+  "exclude": ["node_modules", "**/*.test.ts"]
+}
