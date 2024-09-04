@@ -6,7 +6,7 @@ import { ChatSocket } from "./socket/index";
 const isProduction = process.env.NODE_ENV == "production";
 const origin =  '*'
 // const origin = isProduction ? 'https://card-game-jade.vercel.app/' : '*'
-const port =  80;
+const port =  8080;
 
 const app = express();
 app.use(express.json());
